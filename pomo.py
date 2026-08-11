@@ -51,23 +51,24 @@ def log_pomo(task: str, pomo_data_file: str) -> None:
     try:
         while True:
             data = {"task": task, "start": datetime.now().astimezone().strftime(DATE_FMT)}
-            data["end"] = countdown_pomo(seconds=POMO_SECONDS, task=task, count=count_pomos)
+            try:
+                data["end"] = countdown_pomo(seconds=POMO_SECONDS, task=task, count=count_pomos)
+            except KeyboardInterrupt:
+                data["end"] = datetime.now().astimezone().strftime(DATE_FMT)
+                write_data(data, pomo_data_file)
+                raise
             write_data(data, pomo_data_file)
             count_pomos += 1
 
-            # 15 minutes break on every 3rd consecutive pomo
             if count_pomos > 0 and count_pomos % 3 == 0:
                 countdown_break(BREAK_SECONDS * 3)
             else:
                 countdown_break(BREAK_SECONDS)
 
-            if prompt_repeat() == False:
+            if not prompt_repeat():
                 break
-    except KeyboardInterrupt as err:
-        # log the date if user ctrl+c
-        data["end"] = datetime.now().astimezone().strftime(DATE_FMT)
-        write_data(data, pomo_data_file)
-        raise err
+    except KeyboardInterrupt:
+        print("\nBye!")
 
 def write_data(data: dict, pomo_data_file: str) -> None:
     with open(pomo_data_file, "a") as file:

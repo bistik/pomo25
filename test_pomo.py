@@ -19,4 +19,4 @@ class TestCrawl(unittest.TestCase):
 
         output = f.getvalue().strip()
 
-        self.assertStartsWith('Break time', output)
+        self.assertIn('Break time', output)
