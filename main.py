@@ -23,19 +23,19 @@ def main() -> None:
     To get started, set an environment variable POMO_DATA_FILE to the path of your jsonl datafile.
     Make sure the data file exists.
         $ touch data/pomo.jsonl
-        $ POMO_DATA_FILE=data/pomo.jsonl uv run main.py
+        $ POMO_DATA_FILE=data/pomo.jsonl pomo25
     
     Or create a .env file in the same directory as main.py, with contents:
     
     POMO_DATA_FILE=data/pomo.jsonl
     
-    Then run: `uv run main.py`
+    Then run: `pomo25`
 
-    You can also create the data file with the -i or --init flag like so: `uv run main.py -i`.
+    You can also create the data file with the -i or --init flag like so: `pomo25 -i`.
     You would still need to set the environment variable after creating the jsonl data file.
 
-    With data file created and environment variable set. Just run `uv run main.py` to record a new pomodoro.
-    To specify the name of the task do: `uv run main.py -t "Baking a cake"`
+    With data file created and environment variable set. Just run `pomo25` to record a new pomodoro.
+    To specify the name of the task do: `pomo25 -t "Baking a cake"`
 
     Wikipedia article on pomodoro technique - https://en.wikipedia.org/wiki/Pomodoro_Technique
     """

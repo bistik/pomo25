@@ -1,7 +1,23 @@
 [project]
-name = "pypomo"
+name = "pomo25"
 version = "0.1.0"
-description = "Add your description here"
+description = "A CLI pomodoro timer that logs sessions to a JSONL file"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "nava",
+    "python-dotenv",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+pomo25 = "main:main"
+
+[tool.hatch.build.targets.wheel]
+include = [
+  "/main.py",
+  "/pomo.py",
+]
