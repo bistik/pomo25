@@ -1,4 +1,4 @@
-## pypomo
+## pomo25
 
 A script that records pomodoro sessions.
 
@@ -7,7 +7,7 @@ To get started, set an environment variable POMO_DATA_FILE to the path of your j
 ```
 
 1. In ~/.bashrc, you can add:
-   export POMO_DATA_FILE=~/pomo.jsonl pomo25
+   export POMO_DATA_FILE=~/pomo.jsonl
 
 2. source ~/.bashrc
 
