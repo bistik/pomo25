@@ -3,7 +3,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Final
+from typing import Final, TypedDict
 
 from nava import play
 
@@ -13,6 +13,11 @@ DATE_FMT: Final = "%b %d, %Y %H:%M:%S %z"
 BASE_DIR = Path(__file__).resolve().parent
 BREAK_WAV = str(BASE_DIR / "assets" / "break.wav")
 END_WAV = str(BASE_DIR / "assets" / "end.wav")
+
+class PomoData(TypedDict):
+    start: str
+    end: str
+    task: str
 
 def clear_last_line() -> None:
     # Move cursor up 1 line (\033[1A) and clear the line (\033[2K)
@@ -24,7 +29,7 @@ def prompt_repeat() -> bool:
     clear_last_line()
     if user_input == "" or user_input.startswith('y'):
         return True
-    print("Bye!")
+    print("\nBye!")
     return False
 
 def countdown_pomo(seconds: int, task: str, count: int, date_fmt=DATE_FMT, play_sound=True) -> str:
@@ -56,14 +61,18 @@ def log_pomo(task: str, pomo_data_file: str) -> None:
     count_pomos = 0
     try:
         while True:
-            data = {"task": task, "start": datetime.now().astimezone().strftime(DATE_FMT)}
+            pomo_data: PomoData = {
+                "task": task,
+                "start": datetime.now().astimezone().strftime(DATE_FMT),
+                "end": ""
+            }
             try:
-                data["end"] = countdown_pomo(seconds=POMO_SECONDS, task=task, count=count_pomos)
+                pomo_data["end"] = countdown_pomo(seconds=POMO_SECONDS, task=task, count=count_pomos)
             except KeyboardInterrupt:
-                data["end"] = datetime.now().astimezone().strftime(DATE_FMT)
-                write_data(data, pomo_data_file)
+                pomo_data["end"] = datetime.now().astimezone().strftime(DATE_FMT)
+                write_data(pomo_data, pomo_data_file)
                 raise
-            write_data(data, pomo_data_file)
+            write_data(pomo_data, pomo_data_file)
             count_pomos += 1
 
             if count_pomos > 0 and count_pomos % 3 == 0:
@@ -76,7 +85,7 @@ def log_pomo(task: str, pomo_data_file: str) -> None:
     except KeyboardInterrupt:
         print("\nBye!")
 
-def write_data(data: dict, pomo_data_file: str) -> None:
+def write_data(data: PomoData, pomo_data_file: str) -> None:
     with open(pomo_data_file, "a") as file:
         json.dump(data, file)
         file.write("\n")

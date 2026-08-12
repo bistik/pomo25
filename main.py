@@ -47,8 +47,9 @@ def main() -> None:
     args = parser.parse_args()
     do_pomo = True
     load_dotenv()
-    data_file=os.environ.get('POMO_DATA_FILE')
+    data_file=os.environ.get('POMO_DATA_FILE', '')
     task="Default task"
+    print('data_file', data_file)
 
     if args.task is not None:
         task=args.task
