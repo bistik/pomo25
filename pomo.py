@@ -2,6 +2,7 @@ import json
 import sys
 import time
 from datetime import datetime
+from pathlib import Path
 from typing import Final
 
 from nava import play
@@ -9,6 +10,9 @@ from nava import play
 POMO_SECONDS: Final = 60*25
 BREAK_SECONDS: Final = 60*5
 DATE_FMT: Final = "%b %d, %Y %H:%M:%S %z"
+BASE_DIR = Path(__file__).resolve().parent
+BREAK_WAV = str(BASE_DIR / "assets" / "break.wav")
+END_WAV = str(BASE_DIR / "assets" / "end.wav")
 
 def clear_last_line() -> None:
     # Move cursor up 1 line (\033[1A) and clear the line (\033[2K)
@@ -24,6 +28,7 @@ def prompt_repeat() -> bool:
     return False
 
 def countdown_pomo(seconds: int, task: str, count: int, date_fmt=DATE_FMT, play_sound=True) -> str:
+    end = datetime.now().astimezone().strftime(date_fmt)
     while seconds >= 0:
         mins, secs = divmod(seconds, 60)
         print(f"\rPomodoro #{count + 1} - '{task}' {mins:02d}:{secs:02d}".ljust(20), end="", flush=True)
@@ -32,7 +37,7 @@ def countdown_pomo(seconds: int, task: str, count: int, date_fmt=DATE_FMT, play_
         seconds -= 1
 
     if play_sound:
-        play("assets/end.wav")
+        play(END_WAV)
 
     return end
 
@@ -45,7 +50,7 @@ def countdown_break(seconds: int, play_sound=True) -> None:
         seconds -= 1
 
     if play_sound:
-        play("assets/break.wav")
+        play(BREAK_WAV)
 
 def log_pomo(task: str, pomo_data_file: str) -> None:
     count_pomos = 0
