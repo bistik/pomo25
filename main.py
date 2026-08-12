@@ -1,7 +1,10 @@
-from dotenv import load_dotenv
 import argparse
-from pomo import log_pomo, create_pomo_data_file
 import os
+
+from dotenv import load_dotenv
+
+from pomo import create_pomo_data_file, log_pomo
+
 
 def run_start(task: str, pomo_data_file: str) -> None:
     try:
@@ -12,23 +15,22 @@ def run_start(task: str, pomo_data_file: str) -> None:
 def create_data_file(data_file: str) -> None:
     try:
         create_pomo_data_file(data_file)
-        do_pomo = False
-    except Exception as err:
+    except FileNotFoundError as err:
         print("Error reading POMO_DATA_FILE in your environment, create .env file or set POMO_DATA_FILE environment variable")
         print(err)
 
 def main() -> None:
-    desc= f"""A script to record pomodoro sessions.
-    
+    desc= """A script to record pomodoro sessions.
+
     To get started, set an environment variable POMO_DATA_FILE to the path of your jsonl datafile.
     Make sure the data file exists.
         $ touch data/pomo.jsonl
-        $ POMO_DATA_FILE=data/pomo.jsonl pomo25
-    
+        $ POMO_DATA_FILE=data/pomo.jsonl
+
     Or create a .env file in the same directory as main.py, with contents:
-    
+
     POMO_DATA_FILE=data/pomo.jsonl
-    
+
     Then run: `pomo25`
 
     You can also create the data file with the -i or --init flag like so: `pomo25 -i`.

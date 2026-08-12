@@ -1,9 +1,10 @@
 import json
-from datetime import datetime
-import time
 import sys
-from nava import play
+import time
+from datetime import datetime
 from typing import Final
+
+from nava import play
 
 POMO_SECONDS: Final = 60*25
 BREAK_SECONDS: Final = 60*5
@@ -22,7 +23,7 @@ def prompt_repeat() -> bool:
     print("Bye!")
     return False
 
-def countdown_pomo(seconds: int, task: str, count: int, date_fmt=DATE_FMT, play_sound=True) -> datetime:
+def countdown_pomo(seconds: int, task: str, count: int, date_fmt=DATE_FMT, play_sound=True) -> str:
     while seconds >= 0:
         mins, secs = divmod(seconds, 60)
         print(f"\rPomodoro #{count + 1} - '{task}' {mins:02d}:{secs:02d}".ljust(20), end="", flush=True)
@@ -76,5 +77,5 @@ def write_data(data: dict, pomo_data_file: str) -> None:
         file.write("\n")
 
 def create_pomo_data_file(file_path) -> None:
-    with open(file_path, "a") as f:
+    with open(file_path, "a"):
         pass

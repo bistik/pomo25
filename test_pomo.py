@@ -1,8 +1,10 @@
 import io
 import unittest
 from contextlib import redirect_stdout
-from pomo import countdown_pomo, countdown_break
 from datetime import datetime, timedelta
+
+from pomo import countdown_break, countdown_pomo
+
 
 class TestCrawl(unittest.TestCase):
     def test_countdown_pomo(self):
