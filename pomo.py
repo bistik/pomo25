@@ -32,7 +32,7 @@ def countdown_pomo(seconds: int, task: str, count: int, date_fmt=DATE_FMT, play_
         seconds -= 1
 
     if play_sound:
-        play("end.wav")
+        play("assets/end.wav")
 
     return end
 
@@ -45,7 +45,7 @@ def countdown_break(seconds: int, play_sound=True) -> None:
         seconds -= 1
 
     if play_sound:
-        play("break.wav")
+        play("assets/break.wav")
 
 def log_pomo(task: str, pomo_data_file: str) -> None:
     count_pomos = 0
