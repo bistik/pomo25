@@ -1,23 +1,20 @@
 import argparse
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
+from config import Config
 from pomo import create_pomo_data_file, log_pomo
 
+BASE_DIR = Path(__file__).resolve().parent
 
-def run_start(task: str, pomo_data_file: str) -> None:
+def run_start(config: Config) -> None:
     try:
-        log_pomo(task, pomo_data_file)
+        log_pomo(config)
     except FileNotFoundError:
-        print("We cannot find your pomo data file")
-
-def create_data_file(data_file: str) -> None:
-    try:
-        create_pomo_data_file(data_file)
-    except FileNotFoundError as err:
-        print("Error reading POMO_DATA_FILE in your environment, create .env file or set POMO_DATA_FILE environment variable")
-        print(err)
+        print("We cannot find your pomo data file {}".format(config["data_file"]))
+        raise
 
 def main() -> None:
     desc= """A script to record pomodoro sessions.
@@ -45,21 +42,30 @@ def main() -> None:
     parser.add_argument('-t', '--task', help="Sets the name of task for the 25-minute pomodoro.")
     parser.add_argument('-i', '--init', action="store_true", help="Creates pomodoro data file if it doesn't exist yet. It assumes the directory of the data file exists. We do not create any subdirectory.")
     args = parser.parse_args()
-    do_pomo = True
     load_dotenv()
-    data_file=os.environ.get('POMO_DATA_FILE', '')
-    task="Default task"
-    print('data_file', data_file)
+    config: Config = {
+        "data_file": os.environ.get('POMO_DATA_FILE', ''),
+        "date_format": os.environ.get('POMO_DATE_FMT', '%b %d, %Y %H:%M:%S %z'),
+        "end_sound_file": str(BASE_DIR / 'assets' / 'break.wav'),
+        "break_sound_file": str(BASE_DIR / 'assets' / 'break.wav'),
+        "pomo_duration": int(os.environ.get('POMO_DURATION', '1500')),
+        "break_duration": int(os.environ.get('POMO_BREAK_DURATION', '300')),
+        "task_description": "Pomodoro default task",
+        "play_sound": os.environ.get('POMO_SOUND_ON', '1').lower() in ('true', '1'),
+        "debug": os.environ.get('POMO_DEBUG', '0').lower() in ('true', '1')
+    }
+
+    if config["debug"]:
+        print(config)
+        print()
 
     if args.task is not None:
-        task=args.task
+        config["task_description"] = args.task
     if args.init:
-        create_data_file(data_file)
-    if not data_file:
-        print("Unable to read POMO_DATA_FILE environment variable.")
-        do_pomo=False
-    if do_pomo:
-        run_start(task, data_file)
+        create_pomo_data_file(config["data_file"])
+        print("Data file successully created {}".format(config["data_file"]))
+    else:
+        run_start(config)
 
 if __name__ == "__main__":
     main()
